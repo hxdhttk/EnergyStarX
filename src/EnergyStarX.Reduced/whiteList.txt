@@ -1,0 +1,41 @@
+// 每行一个进程名
+// 每行中双斜杠以及之后的内容会被忽略
+// 支持 "?" 和 "*" 通配符
+
+// Edge 会自己管理好资源
+msedge.exe
+WebViewHost.exe
+// UWP Frame 有特别处理, 不应该被限制
+ApplicationFrameHost.exe
+
+// 任务管理器，灭火器不可以着火
+taskmgr.exe
+procmon.exe
+procmon64.exe
+
+// 小组件
+Widgets.exe
+
+// 系统 shell
+dwm.exe
+explorer.exe
+ShellExperienceHost.exe
+StartMenuExperienceHost.exe
+SearchHost.exe
+sihost.exe
+fontdrvhost.exe
+
+// 输入法
+ChsIME.exe
+ctfmon.exe
+
+// 系统服务 - 它们会自己管理好资源
+csrss.exe
+smss.exe
+svchost.exe
+
+// WUDF
+WUDFRd.exe
+
+// Firefox 108 已支持效率模式
+firefox.exe
