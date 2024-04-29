@@ -5,6 +5,7 @@
 // Edge 会自己管理好资源
 msedge.exe
 WebViewHost.exe
+
 // UWP Frame 有特别处理, 不应该被限制
 ApplicationFrameHost.exe
 

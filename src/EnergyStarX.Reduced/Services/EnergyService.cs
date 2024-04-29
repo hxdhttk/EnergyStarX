@@ -218,8 +218,8 @@ public class EnergyService
             Process[] runningProcesses = Process.GetProcesses();
             int currentSessionID = Process.GetCurrentProcess().SessionId;
 
-            IEnumerable<Process> sameAsThisSession = runningProcesses.Where(p =>
-                p.SessionId == currentSessionID
+            IEnumerable<Process> sameAsThisSession = runningProcesses.Where(
+                p => p.SessionId == currentSessionID
             );
             foreach (Process proc in sameAsThisSession)
             {
@@ -251,8 +251,8 @@ public class EnergyService
             Process[] runningProcesses = Process.GetProcesses();
             int currentSessionID = Process.GetCurrentProcess().SessionId;
 
-            IEnumerable<Process> sameAsThisSession = runningProcesses.Where(p =>
-                p.SessionId == currentSessionID
+            IEnumerable<Process> sameAsThisSession = runningProcesses.Where(
+                p => p.SessionId == currentSessionID
             );
             foreach (Process proc in sameAsThisSession)
             {
@@ -322,7 +322,7 @@ public class EnergyService
             }
 
             // Get the process
-            string appName = GetProcessNameFromHandle(procHandle);
+            string appName = GetProcessNameFromProcessId((int)procId[0]);
 
             // UWP needs to be handled in a special case
             if (appName == UWPFrameHostApp)
@@ -361,7 +361,7 @@ public class EnergyService
                             PInvoke.CloseHandle(innerProcHandle);
                             procHandle = innerProcHandle;
                             procId = innerProcId;
-                            appName = GetProcessNameFromHandle(procHandle);
+                            appName = GetProcessNameFromProcessId((int)procId[0]);
                         }
 
                         return true;
@@ -433,8 +433,9 @@ public class EnergyService
         }
 
         if (
-            wildcardProcessList.Any(wildcardExpression =>
-                FileSystemName.MatchesSimpleExpression(wildcardExpression, processName, true)
+            wildcardProcessList.Any(
+                wildcardExpression =>
+                    FileSystemName.MatchesSimpleExpression(wildcardExpression, processName, true)
             )
         )
         {
@@ -460,27 +461,17 @@ public class EnergyService
         );
     }
 
-    private unsafe string GetProcessNameFromHandle(HANDLE hProcess)
+    private unsafe string GetProcessNameFromProcessId(int processId)
     {
-        uint* capacity = stackalloc uint[1];
-        capacity[0] = 1024U;
-        fixed (char* sb = new char[(uint)capacity])
+        try
         {
-            PWSTR pwstr = new PWSTR(sb);
+            Process proc = Process.GetProcessById(processId);
 
-            if (
-                PInvoke.QueryFullProcessImageName(
-                    hProcess,
-                    PROCESS_NAME_FORMAT.PROCESS_NAME_WIN32,
-                    pwstr,
-                    capacity
-                )
-            )
-            {
-                return Path.GetFileName(new string(sb));
-            }
+            return proc.MainModule?.ModuleName ?? "";
         }
-
-        return "";
+        catch
+        {
+            return "";
+        }
     }
 }

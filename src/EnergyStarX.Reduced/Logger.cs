@@ -2,14 +2,19 @@
 
 internal static class Logger
 {
-    private static readonly TextWriter logFile = TextWriter.Synchronized(
-        File.CreateText("log.txt")
-    );
+    private static readonly TextWriter logFile;
+
+    static Logger()
+    {
+        StreamWriter logStream = File.CreateText("log.txt");
+        logStream.AutoFlush = true;
+
+        logFile = TextWriter.Synchronized(logStream);
+    }
 
     private static void Log(string logLevel, string message)
     {
         logFile.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}][{logLevel}] {message}");
-        logFile.Flush();
     }
 
     public static void Info(string message) => Log("INFO", message);
